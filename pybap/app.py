@@ -4,8 +4,8 @@ import os
 from osgeo import ogr, gdal
 import geopandas as gpd
 
-from version import __version__
-import arcgis
+from .version import __version__
+from . import arcgis
 
 app  = Flask(__name__,
              template_folder='templates',
@@ -39,5 +39,5 @@ def index():
         'index.jinja2', 
         **retval)
 
-if __name__ == '__main__':
+if(__name__ == '__main__'):
     app.run(debug=True)
