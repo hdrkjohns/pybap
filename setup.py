@@ -15,14 +15,17 @@ setup(
             'numpy' \
             ,'pandas' \
             ,'shapely' \
-            ,'python-docx'
+            ,'python-docx' \
+            ,'openpyxl' \
+            ,'gdal' \
+            ,'flask' \
+            ,'geopandas' \
             ],
     extras_require={ \
     },
     package_data = {
             '': ['*.txt', '*.rst'], \
-            # And include any *.msg files found in the 'hello' package, too:
-            'pybap': ['static/*','templates/*'], \
+            'pybap': ['static/*','templates/*', 'assets/*'], \
     },
     include_package_data=True,
     dependency_links = [ \

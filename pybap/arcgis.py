@@ -6,6 +6,7 @@ import io
 import zipfile
 import shutil
 import time
+import pkg_resources
 from osgeo import gdal, ogr
 import geopandas as gpd
 import pandas as pd
@@ -22,14 +23,16 @@ FS_URL = 'https://services.arcgis.com/04HiymDgLlsbhaV4/arcgis/rest/services/BAP3
 OUT_DIR = r'C:\Users\kjohns\OneDrive - HDR, Inc\Documents\BAP\_EXPORT'
 OUT_ZIP_BASE = 'BAP_EXPORT'
 
-EXCEL_COL_LOOKUP = r"C:\Users\kjohns\OneDrive - HDR, Inc\Documents\BAP\BAP_Excel_Vals.xlsx"
+# EXCEL_COL_LOOKUP = r"C:\Users\kjohns\OneDrive - HDR, Inc\Documents\BAP\BAP_Excel_Vals.xlsx"
 EXCEL_BAP_TEMPLATE = r"C:\Users\kjohns\HDR, Inc\Gambrell, Travis - Templates\(Proj Name) - Bldg Assessment Form.xlsx"
 WORD_BAP_TEMPLATE = r"C:\Users\kjohns\HDR, Inc\Gambrell, Travis - Templates\(Proj Name) - Cover Page and TOC.docx"
 EXCEL_BAP_COMPONENT_TEMPLATE = r"C:\Users\kjohns\HDR, Inc\Gambrell, Travis - Templates\(Proj Name) - Major Component List - Simple.xlsx"
 
 LU_CATEGORY_CODES = {'N/A': 'N/A', 'POOR': 'Poor', 'FAIR': 'Fair', 'CRIT': 'Safety / Critical', 'SFTY': 'Safety / Critical', 'ACT': 'Acceptable', 'GWO': 'Acceptable'}
 
-df_lookup = pd.read_excel(EXCEL_COL_LOOKUP, sheet_name='BAP_Excel_Vals')
+lookup_excel_path = pkg_resources.resource_filename('pybap', 'assets/BAP_Excel_Vals.xlsx')
+
+df_lookup = pd.read_excel(lookup_excel_path, sheet_name='BAP_Excel_Vals')
 
 def download_online_gdb(fs_item_id:str, out_zip_base:str, out_dir:str) -> str:
     '''
