@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<head>
+    <meta charset="utf-8">
+    <title>
+        {% block title %}
+            pybap web
+        {% endblock %}
+    </title>
+    <link rel="shortcut icon" href="${request.static_url('pytrafficweb:static/favicon.ico')}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="${request.static_url('pytrafficweb:static/css/jquery-ui-1.8.16.custom.css')}">
+    <script type='text/javascript'
+        src="${request.static_url('pytrafficweb:static/js/jquery-1.6.4.min.js')}"></script>
+    <script type='text/javascript'
+        src="${request.static_url('pytrafficweb:static/js/jquery.cookie.js')}"></script>
+    <script type='text/javascript'
+        src="${request.static_url('pytrafficweb:static/js/jquery-ui-1.8.16.custom.min.js')}"></script>
+    <script type='text/javascript'
+        src="${request.static_url('pytrafficweb:static/js/base.js')}"></script>
+
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+    <div id='divMain'>
+        <table style='width:100%;height:100%;' cellpadding='0' cellspacing='0'>
+            <tr>
+                <td id='header'>
+                    <h1>pybap web</h1>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id='divLinks'>
+                        <a href="${request.route_url('main')}">home</a> |
+                        <a target='_blank' href="${request.static_url('pytrafficweb:help/')}">help</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style='height:100%;'>
+                    <div id='divMainContent'>
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td id='footer'>
+                    {{ today }}
+                    |
+                    &copy; HDR <a href='mailto:kevin.johns@hdrinc.com'>kevin johns</a>
+                    |
+                    <span style='font-size:0.7em;'>
+                        website version: {{ pybap_version }}
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

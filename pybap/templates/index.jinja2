@@ -1,0 +1,17 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+<form id='formBap' method='post'>
+    <span>Select a BAP Project:</span>
+    <br />
+    <select name='ddlBapProject' id='ddlBapProject' style='width:300px;'>
+        {% for row in projects %}
+        <option value="{{ row[0] }}">{{ row[1] }}</option>
+        {% endfor %}
+    </select>
+
+    <br />
+    <br />
+    <button name='btnGenerateBapFiles' method='POST' >Generate BAP Files</button>
+</form>
+{% endblock %}

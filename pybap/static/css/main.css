@@ -1,0 +1,127 @@
+*{
+    margin: 0;
+    /*padding: 0;*/
+}
+
+html,body{
+    font-size: 0.9em;
+    height: 100%;
+    font-family: tahoma;
+}
+
+form{
+    display:inline;
+}
+
+td{
+    vertical-align: top;
+    text-align: left;
+}
+
+p{
+    padding-bottom: 20px;
+}
+
+/*ul {
+    padding-left: 30px;
+    list-style: circle;
+}*/
+
+.padded-left {
+    padding-left: 20px;
+    padding-bottom: 10px;
+}
+
+ol{
+    padding-left:30px;
+}
+
+li{
+    padding-bottom:5px;
+}
+
+#header{
+    text-align:center;
+    vertical-align:middle;
+    background-color:#1d62c9;
+    height:40px;
+    border-bottom: solid 1px black;
+    color: #ffa302;
+}
+
+#footer{
+    text-align:center;
+    vertical-align:middle;
+    background-color:#1d62c9;
+    height:30px;
+    border-top: solid 2px #dddddd;
+    font-weight: bold;
+    color: #ffa302;
+}
+
+#divMain{
+    height:100%;
+    width:100%;
+}
+
+#divLinks{
+    border-bottom: solid 2px #0033ff;
+    background-color:#dddddd;
+    height: 25px;
+    vertical-align:middle;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+#divLinks a{
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-decoration: none;
+    font-variant: small-caps;
+}
+
+#divLinks a:visited {
+    color: #1d62c9;
+}
+
+#divLinks a:hover {
+    color: #FFA302;
+    background-color: #1d62c9;
+}
+
+#divMainContent{
+    height:100%;
+    padding: 10px;
+}
+
+#ulMainLinks{
+    list-style-type: none;
+    text-indent: 5px;
+    text-decoration: none;
+    padding-left:10px;
+}
+
+table.border  td, table.border  th{
+    border:1px solid black;
+}
+
+.notes{
+    font-size: 0.7em;
+    font-weight: bold;
+    padding-left:15px;
+    padding-bottom:15px;
+}
+
+input[type='submit']{
+    font-size: 0.8em;
+}
+
+input[type='file']{
+    font-size: 0.8em;
+}
+
+input[type='button']{
+    font-size: 0.8em;
+}
