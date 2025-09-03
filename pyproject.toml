@@ -4,7 +4,7 @@ requires = ['numpy'
             ,'shapely'
             ,'python-docx'
             ,'openpyxl'
-            ,'gdal'
+            ,'gdal==3.4.3'
             ,'flask'
             ,'geopandas']
 build-backend = "setuptools.build_meta"
