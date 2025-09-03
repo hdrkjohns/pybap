@@ -1,0 +1,21 @@
+[build-system]
+requires = ['numpy'
+            ,'pandas'
+            ,'shapely'
+            ,'python-docx'
+            ,'openpyxl'
+            ,'gdal'
+            ,'flask'
+            ,'geopandas']
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pybap"
+dynamic = ["version"]
+version = {attr = "pybap.__version__"}
+
+[project.scripts]
+#ssay = "snakesay.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]

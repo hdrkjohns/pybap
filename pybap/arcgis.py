@@ -1,6 +1,7 @@
 import datetime as dt
 #from arcgis.gis import GIS
 import stat
+import sys
 import os
 import io
 import zipfile
@@ -20,13 +21,21 @@ from pyproj import Transformer
 
 FS_ITEM_ID = 'd92220452d9346d7964b41ed0103806c'
 FS_URL = 'https://services.arcgis.com/04HiymDgLlsbhaV4/arcgis/rest/services/BAP3/FeatureServer'
-OUT_DIR = r'C:\Users\kjohns\OneDrive - HDR, Inc\Documents\BAP\_EXPORT'
+
+if(sys.platform == 'win32'):
+    OUT_DIR = r'C:\Users\kjohns\OneDrive - HDR, Inc\Documents\BAP\_EXPORT'
+    EXCEL_BAP_TEMPLATE = r"C:\Users\kjohns\HDR, Inc\Gambrell, Travis - Templates\(Proj Name) - Bldg Assessment Form.xlsx"
+    WORD_BAP_TEMPLATE = r"C:\Users\kjohns\HDR, Inc\Gambrell, Travis - Templates\(Proj Name) - Cover Page and TOC.docx"
+    EXCEL_BAP_COMPONENT_TEMPLATE = r"C:\Users\kjohns\HDR, Inc\Gambrell, Travis - Templates\(Proj Name) - Major Component List - Simple.xlsx"
+elif(sys.platform == 'linux'):
+    OUT_DIR = r'/mnt/rtc/bap/exports'
+    EXCEL_BAP_TEMPLATE = r"/mnt/rtc/bap/templates/(Proj Name) - Bldg Assessment Form.xlsx"
+    WORD_BAP_TEMPLATE = r"/mnt/rtc/bap/templates/(Proj Name) - Cover Page and TOC.docx"
+    EXCEL_BAP_COMPONENT_TEMPLATE = r"/mnt/rtc/bap/templates/(Proj Name) - Major Component List - Simple.xlsx"
+
 OUT_ZIP_BASE = 'BAP_EXPORT'
 
 # EXCEL_COL_LOOKUP = r"C:\Users\kjohns\OneDrive - HDR, Inc\Documents\BAP\BAP_Excel_Vals.xlsx"
-EXCEL_BAP_TEMPLATE = r"C:\Users\kjohns\HDR, Inc\Gambrell, Travis - Templates\(Proj Name) - Bldg Assessment Form.xlsx"
-WORD_BAP_TEMPLATE = r"C:\Users\kjohns\HDR, Inc\Gambrell, Travis - Templates\(Proj Name) - Cover Page and TOC.docx"
-EXCEL_BAP_COMPONENT_TEMPLATE = r"C:\Users\kjohns\HDR, Inc\Gambrell, Travis - Templates\(Proj Name) - Major Component List - Simple.xlsx"
 
 LU_CATEGORY_CODES = {'N/A': 'N/A', 'POOR': 'Poor', 'FAIR': 'Fair', 'CRIT': 'Safety / Critical', 'SFTY': 'Safety / Critical', 'ACT': 'Acceptable', 'GWO': 'Acceptable'}
 
@@ -79,7 +88,7 @@ def unzip_and_rename(out_zip_file:str, out_dir:str):
         print(exc)
         os.chmod(name, stat.S_IWRITE)
         os.remove(name)
-        
+
     # unzip it now, and then rename the .gdb
     z = zipfile.ZipFile(out_zip_file, mode='r')
     dirs = list(set([os.path.dirname(x) for x in z.namelist()]))
@@ -89,7 +98,7 @@ def unzip_and_rename(out_zip_file:str, out_dir:str):
 
     if(len(dirs) == 1):
         gdb_path = os.path.join(out_dir, 'BAP.gdb')
-        
+
         # delete if exists
         if(os.path.exists(gdb_path)):
             shutil.rmtree(gdb_path, onerror=del_rw)
@@ -109,7 +118,7 @@ def bap_gdb_to_dataframe(gdb_file) -> gpd.GeoDataFrame:
     '''
     ds = gdal.OpenEx(gdb_file, gdal.OF_VECTOR, open_options=['LIST_ALL_TABLES=YES'])
     layer_names = {ds.GetLayer(i).GetName():i for i in range(ds.GetLayerCount())}
-    
+
     df_main = gpd.read_file(gdb_file, layer='Asset_Points')
     df_main.columns += '_main'
 
@@ -165,7 +174,7 @@ def generate_bap_excel(gdf:gpd.GeoDataFrame, asset_guid:str, out_bap_report:str,
         "EPSG:4326",
         always_xy=True,
     )
- 
+
     #display(df_lookup)
 
     # assessment form
@@ -179,7 +188,7 @@ def generate_bap_excel(gdf:gpd.GeoDataFrame, asset_guid:str, out_bap_report:str,
     gdf_filter = gdf[gdf['GlobalID_main'] == asset_guid]
     gdf_filter_t = gdf_filter.T.replace(np.nan, None)
     #display(gdf_filter_t)
-    
+
     # go through the row lookups
     for idx, lu_row in df_lookup.iterrows():
         sheet = wb[lu_row['sheet_name']]
@@ -190,8 +199,8 @@ def generate_bap_excel(gdf:gpd.GeoDataFrame, asset_guid:str, out_bap_report:str,
 
         if(field_name and not (type(field_name) == float and np.isnan(field_name))):
             orig_field, table = str(field_name).rsplit('_', maxsplit=1)
-            field_name_comment = f'{orig_field}_comments_{table}'            
-            
+            field_name_comment = f'{orig_field}_comments_{table}'
+
             if(field_name == 'geometry_main'):
                 val = gdf_filter_t.loc[field_name][asset_guid]
                 xx, yy = trans.transform([val.x], [val.y])
@@ -200,10 +209,10 @@ def generate_bap_excel(gdf:gpd.GeoDataFrame, asset_guid:str, out_bap_report:str,
             else:
                 cell_val = gdf_filter_t.loc[field_name][asset_guid]
             #cell_comments = gdf_filter_t.loc[field_name][asset_guid]
-            
+
             if(type(cell_val) == Point):
                 cell_val = f'{cell_val.x:.2f}, {cell_val.y:.2f}'
-            
+
             comments = '' if field_name_comment not in gdf_filter_t.index else gdf_filter_t.loc[field_name_comment][asset_guid]
 
             if(comments is not None and len(comments.strip()) > 0 and comments != ' None'):
@@ -245,28 +254,28 @@ def generate_bap_worddoc(gdf:gpd.GeoDataFrame, asset_guid:str, in_docx_template:
 
     gdf_filter = gdf[gdf['GlobalID_main'] == asset_guid]
     gdf_filter_t = gdf_filter.T.replace(np.nan, None)
-    
+
     # just get poor, actionable safety or safet concerns
     gdf_filter_poor = gdf_filter_t[gdf_filter_t[asset_guid].isin(['POOR', 'CRIT', 'SFTY'])]
-    
+
     # join to the lookup
     gdf_filter_poor = pd.merge(gdf_filter_poor, df_lookup, how='inner', left_index=True, right_on='field_name' )
     #display(gdf_filter_poor)
-    
+
     # Create a Word document
     doc = Document()
 
     for sheet_name in gdf_filter_poor['sheet_name'].unique():
         doc.add_heading(sheet_name, level=1)
-        
+
         for idx, elementrow in gdf_filter_poor[gdf_filter_poor['sheet_name'] == sheet_name].iterrows():
             doc.add_heading(f"{elementrow['val']} ({elementrow[asset_guid]})", level=3)
 
     # Add a table to the document
     if(False):
         table = doc.add_table(rows=1, cols=len(gdf_filter.columns))
-        table.style = "Table Grid"    
-        
+        table.style = "Table Grid"
+
         # Add header row
         header_cells = table.rows[0].cells
         for i, column_name in enumerate(gdf_filter.columns):
