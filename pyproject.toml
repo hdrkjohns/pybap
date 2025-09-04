@@ -14,6 +14,8 @@ build-backend = "setuptools.build_meta"
 name = "pybap"
 authors = [{"name"="kevin johns", "email"="kevin.johns@hdrinc.com"}]
 dynamic = ["version"]
+
+[tool.setuptools.dynamic]
 version = {attr = "pybap.__version__"}
 
 [project.scripts]
