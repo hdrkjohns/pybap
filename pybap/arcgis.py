@@ -146,8 +146,10 @@ def bap_gdb_to_dataframe(gdb_file) -> gpd.GeoDataFrame:
     df_st = gpd.read_file(gdb_file, layer='Structural')
     df_st.columns += '_st'
 
-    ds.Close()
-    del ds
+    try:
+        ds.Close()
+    finally:
+        del ds
 
     # join all the things together to make the big table
     df_all = df_ai.merge(df_ae, how='inner', left_on='asset_point_globalid_ai', right_on='asset_point_globalid_ae') \
