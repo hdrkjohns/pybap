@@ -1,5 +1,6 @@
 [build-system]
-requires = ['numpy'
+requires = ['setuptools'
+            ,'numpy'
             ,'pandas'
             ,'shapely'
             ,'python-docx'
@@ -11,11 +12,19 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pybap"
+authors = [{"name"="kevin johns", "email"="kevin.johns@hdrinc.com"}]
 dynamic = ["version"]
 version = {attr = "pybap.__version__"}
 
 [project.scripts]
 #ssay = "snakesay.__main__:main"
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.setuptools.package-data]
+# Specify the package name and the files to include
+pybap = ["static/*", "templates/*", "assets/*"]
