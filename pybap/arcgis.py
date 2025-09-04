@@ -15,6 +15,7 @@ import numpy as np
 import openpyxl as xl
 import pandas as pd
 import numpy as np
+from typing import Tuple
 from shapely.geometry import Point
 from docx import Document
 from pyproj import Transformer
@@ -117,6 +118,11 @@ def bap_gdb_to_dataframe(gdb_file) -> gpd.GeoDataFrame:
     '''
     '''
     ds = gdal.OpenEx(gdb_file, gdal.OF_VECTOR, open_options=['LIST_ALL_TABLES=YES'])
+
+    if(ds is None):
+        print(f'GDB may not be accessible: "{gdb_file}"')
+        return None
+
     layer_names = {ds.GetLayer(i).GetName():i for i in range(ds.GetLayerCount())}
 
     df_main = gpd.read_file(gdb_file, layer='Asset_Points')
@@ -169,7 +175,7 @@ def bap_gdb_to_dataframe(gdb_file) -> gpd.GeoDataFrame:
 
     return df_all
 
-def generate_bap_excel(gdf:gpd.GeoDataFrame, asset_guid:str, out_bap_report:str, out_bap_component:str):
+def generate_bap_excel(gdf:gpd.GeoDataFrame, asset_guid:str) -> Tuple[xl.Workbook, xl.Workbook]:
     '''
     '''
 
@@ -247,12 +253,9 @@ def generate_bap_excel(gdf:gpd.GeoDataFrame, asset_guid:str, out_bap_report:str,
 
                     row_component += 1
 
-    wb.save(out_bap_report)
-    wb_component.save(out_bap_component)
-
     return (wb, wb_component)
 
-def generate_bap_worddoc(gdf:gpd.GeoDataFrame, asset_guid:str, in_docx_template:str, out_docx:str) -> Document:
+def generate_bap_worddoc(gdf:gpd.GeoDataFrame, asset_guid:str, in_docx_template:str) -> Document:
     '''
     '''
 
@@ -291,20 +294,29 @@ def generate_bap_worddoc(gdf:gpd.GeoDataFrame, asset_guid:str, in_docx_template:
             for i, value in enumerate(row):
                 row_cells[i].text = str(value)
 
-    # Save the document
-    doc.save(out_docx)
-
     return doc
 
-def combine_bap_files(out_bap_report:str, out_bap_component:str, out_docx:str) -> io.BytesIO:
+def combine_bap_files(out_bap_report:io.BytesIO, out_bap_component:io.BytesIO, out_docx:io.BytesIO) -> io.BytesIO:
     '''
     '''
+    out_bap_report.seek(0)
+    out_bap_component.seek(0)
+    out_docx.seek(0)
+
     buffer = io.BytesIO()
     z = zipfile.ZipFile(buffer, mode='w')
 
-    z.write(out_bap_report, os.path.basename(out_bap_report))
-    z.write(out_bap_component, os.path.basename(out_bap_component))
-    z.write(out_docx, os.path.basename(out_docx))
+    fp = z.open('bap_report.xlsx', mode='w')
+    fp.write(out_bap_report.getvalue())
+    fp.close()
+
+    fp = z.open('bap_component.xlsx', mode='w')
+    fp.write(out_bap_component.getvalue())
+    fp.close()
+
+    fp = z.open('bap.docx', mode='w')
+    fp.write(out_docx.getvalue())
+    fp.close()
 
     z.close()
     buffer.seek(0)

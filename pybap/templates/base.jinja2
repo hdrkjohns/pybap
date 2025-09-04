@@ -6,17 +6,17 @@
             pybap web
         {% endblock %}
     </title>
-    <link rel="shortcut icon" href="${request.static_url('pytrafficweb:static/favicon.ico')}">
+    <link rel="shortcut icon" href="${request.static_url('pybap:static/favicon.ico')}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="stylesheet" href="${request.static_url('pytrafficweb:static/css/jquery-ui-1.8.16.custom.css')}">
+    <link rel="stylesheet" href="${request.static_url('pybap:static/css/jquery-ui-1.8.16.custom.css')}">
     <script type='text/javascript'
-        src="${request.static_url('pytrafficweb:static/js/jquery-1.6.4.min.js')}"></script>
+        src="${request.static_url('pybap:static/js/jquery-1.6.4.min.js')}"></script>
     <script type='text/javascript'
-        src="${request.static_url('pytrafficweb:static/js/jquery.cookie.js')}"></script>
+        src="${request.static_url('pybap:static/js/jquery.cookie.js')}"></script>
     <script type='text/javascript'
-        src="${request.static_url('pytrafficweb:static/js/jquery-ui-1.8.16.custom.min.js')}"></script>
+        src="${request.static_url('pybap:static/js/jquery-ui-1.8.16.custom.min.js')}"></script>
     <script type='text/javascript'
-        src="${request.static_url('pytrafficweb:static/js/base.js')}"></script>
+        src="${request.static_url('pybap:static/js/base.js')}"></script>
 
     {% block head %}
     {% endblock %}
@@ -33,7 +33,7 @@
                 <td>
                     <div id='divLinks'>
                         <a href="${request.route_url('main')}">home</a> |
-                        <a target='_blank' href="${request.static_url('pytrafficweb:help/')}">help</a>
+                        <a target='_blank' href="${request.static_url('pybap:help/')}">help</a>
                     </div>
                 </td>
             </tr>
