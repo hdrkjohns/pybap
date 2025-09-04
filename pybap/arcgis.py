@@ -148,6 +148,8 @@ def bap_gdb_to_dataframe(gdb_file) -> gpd.GeoDataFrame:
 
     try:
         ds.Close()
+    except AttributeError:
+        pass
     finally:
         del ds
 
